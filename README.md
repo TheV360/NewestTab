@@ -8,7 +8,14 @@ Very early in development
 * cool
 * TODO: more
 
+# TODO
+* Backgrounds
+* Customizable bookmarks
+* GitHub Pages builds my TypeScript for me
+* Extension version?
+
 # Credits
 * V360 - code
 * Mario Klingemann - not-yet-used Superfast Blur
-* [Sophie Dale, via Unsplash.](https://unsplash.com/photos/4wG_qIjrd5U) - background
+* [Sophie Dale, via Unsplash.](https://unsplash.com/photos/4wG_qIjrd5U) - the warm sunset thing background
+* [Andre Benz, via Unsplash.](https://unsplash.com/photos/cXU6tNxhub0) - the blue cityscape

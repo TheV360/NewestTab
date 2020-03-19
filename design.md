@@ -2,6 +2,8 @@
 
 ## Goals
 * Quick minimal lightweight tab page.
+* NewerTab background support
+* Maybe browser extension version?
 * Inspired by some tab pages I've seen on r/UnixPorn and r/StartPages, the ones with a search bar and a few bookmarks in columns below it.
 
 ## Features

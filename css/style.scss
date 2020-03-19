@@ -1,10 +1,23 @@
----
----
+// ---
+// ---
 
 // TODO: before committing, please!!!! Remove comments from front matter.
 // I've forgotten to do it ONE time.
 
-/* Reset Styles */
+// Variables
+:root {
+	--border-radius: 1rem;
+	
+	--background: linear-gradient(#e66465, #9198e5);
+	--background-blur: linear-gradient(#9198e5, #e66465);
+	
+	--primary: white;
+	
+	--bar-active-fg: black;
+	--bar-active-bg: #ffffffb0;
+}
+
+// Reset Styles
 * {
 	border: 0;
 	padding: 0;
@@ -30,15 +43,16 @@ html, body {
 
 body {
 	display: flex;
-	position: fixed;
+	position: absolute;
 	top: 0; left: 0;
 	
 	justify-content: center;
 	align-items: center;
 	
-	background-image: url("../img/test.jpg");
-	background-attachment: fixed;
+	background-image: var(--background);
+	background-repeat: no-repeat;
 	background-position: center;
+	background-attachment: fixed;
 	background-size: cover;
 }
 
@@ -47,69 +61,110 @@ input {
 }
 
 #main {
-	// display: flex;
-	position: absolute;
+	display: flex;
+	position: relative;
 	
-	width: 80vw;
-	height: 2rem;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	
+	width: 90vw;
+	height: auto;
 	
 	max-width: 40rem;
 	
-	border-radius: 1rem;
-	
-	background-image: url("../img/testBlurred.jpg");
-	background-attachment: fixed;
-	background-position: center;
-	background-size: cover;
+	border-radius: var(--border-radius);
 	
 	overflow: hidden;
 	
-	&.on {
-		height: auto;
+	&:not(.css-filter):not(.css-backdrop-filter) {
+		background-image: var(--background-blur);
+		background-repeat: no-repeat;
+		background-position: center;
+		background-attachment: fixed;
+		background-size: cover;
 	}
 	
-	transition: max-height 0.5s ease-out;
-	
-	#clock {
+	&.css-filter::before {
+		content: "";
 		position: absolute;
 		
-		top: 0; right: 1rem;
+		// todo: ewww
+		top: -8rem; left: -8rem;
+		bottom: -8rem; right: -8rem;
 		
-		line-height: 2rem;
-		vertical-align: middle;
+		// top: 0; left: 0;
+		// bottom: 0; right: 0;
+		
+		background-image: var(--background);
+		background-repeat: no-repeat;
+		background-position: center;
+		background-attachment: fixed;
+		background-size: cover;
+		
+		filter: blur(2rem);
+	}
+	
+	&.css-backdrop-filter {
+		-webkit-backdrop-filter: blur(2rem);
+		backdrop-filter: blur(2rem);
 	}
 	
 	#bar {
+		display: flex;
 		position: relative;
+		
+		justify-content: center;
+		align-items: center;
+		flex-direction: row;
 		
 		width: 100%;
 		height: 2rem;
 		
-		transition: background-color 0.25s ease;
+		transition: all 0.25s ease;
 		background-color: transparent;
-	
+		
+		border-radius: var(--border-radius);
 		overflow: hidden;
 		
 		&.on {
-			border-radius: 0 0 1rem 1rem;
+			color: var(--bar-active-fg);
+			background-color: var(--bar-active-bg);
 			
-			background-color: white;
+			#clock {
+				color: var(--bar-active-fg);
+			}
+			
+			#search {
+				color: var(--bar-active-fg);
+			}
+		}
+	
+		#clock {
+			padding: .5rem 1rem;
+			
+			// border-radius: var(--border-radius) 0 0 var(--border-radius);
+			
+			line-height: 1;
+			
+			background-color: transparentize($color: white, $amount: 0.75);
 		}
 		
 		#search {
-			width: auto;
 			height: 2rem;
 			
 			padding: .5rem 1rem;
 			
+			color: var(--primary);
 			background-color: transparent;
 			
 			font-family: "Iosevka Term SS02", "Roboto", sans-serif;
 			font-weight: 300;
 			
+			flex-grow: 1;
+			
 			&::placeholder {
-				color: white;
-				opacity: 0.75;
+				color: transparentize($color: white, $amount: 0.5);
 			}
 		}
 	}
@@ -117,11 +172,13 @@ input {
 	#results {
 		width: 100%;
 		
-		margin: 1rem;
-		
 		background-color: transparent;
 		
 		line-height: 1.4;
+		
+		&.on {
+			padding: 1rem;
+		}
 		
 		li {
 			list-style-position: inside;
@@ -129,7 +186,13 @@ input {
 			
 			a {
 				text-decoration: none;
-				color: white;
+				color: var(--primary);
+			}
+			
+			&:focus-within {
+				background-color: transparentize($color: white, $amount: 0.5);
+				
+				border-radius: var(--border-radius);
 			}
 		}
 	}
