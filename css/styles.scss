@@ -1,0 +1,135 @@
+// ---
+// ---
+
+// TODO: before committing, please!!!! Remove comments from front matter.
+
+/* Reset Styles */
+* {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	outline: 0;
+	
+	box-sizing: border-box;
+}
+html, body {
+	width: 100%;
+	min-height: 100%;
+	
+	color: white;
+	background-color: black;
+	
+	font-family: "Iosevka Term SS02", "Roboto", sans-serif;
+	font-weight: 300;
+}
+
+::placeholder {
+	opacity: 1;
+}
+
+body {
+	display: flex;
+	position: fixed;
+	top: 0; left: 0;
+	
+	justify-content: center;
+	align-items: center;
+	
+	background-image: url("../img/test.jpg");
+	background-attachment: fixed;
+	background-position: center;
+	background-size: cover;
+}
+
+input {
+	font-size: 1rem;
+}
+
+#main {
+	// display: flex;
+	position: absolute;
+	
+	width: 80vw;
+	height: 2rem;
+	
+	max-width: 40rem;
+	
+	border-radius: 1rem;
+	
+	background-image: url("../img/testBlurred.jpg");
+	background-attachment: fixed;
+	background-position: center;
+	background-size: cover;
+	
+	overflow: hidden;
+	
+	&.on {
+		height: auto;
+	}
+	
+	transition: max-height 0.5s ease-out;
+	
+	#clock {
+		position: absolute;
+		
+		top: 0; right: 1rem;
+		
+		line-height: 2rem;
+		vertical-align: middle;
+	}
+	
+	#bar {
+		position: relative;
+		
+		width: 100%;
+		height: 2rem;
+		
+		transition: background-color 0.25s ease;
+		background-color: transparent;
+	
+		overflow: hidden;
+		
+		&.on {
+			border-radius: 0 0 1rem 1rem;
+			
+			background-color: white;
+		}
+		
+		#search {
+			width: auto;
+			height: 2rem;
+			
+			padding: .5rem 1rem;
+			
+			background-color: transparent;
+			
+			font-family: "Iosevka Term SS02", "Roboto", sans-serif;
+			font-weight: 300;
+			
+			&::placeholder {
+				color: white;
+				opacity: 0.75;
+			}
+		}
+	}
+	
+	#results {
+		width: 100%;
+		
+		margin: 1rem;
+		
+		background-color: transparent;
+		
+		line-height: 1.4;
+		
+		li {
+			list-style-position: inside;
+			list-style-type: '-> ';
+			
+			a {
+				text-decoration: none;
+				color: white;
+			}
+		}
+	}
+}
