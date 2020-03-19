@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", e=>{
 	// Remove all empty whitespace nodes.
 	clean(document.body);
 	
+	alert("Heads up - this is very early in development. Not quite usable yet. For a stable new tab page, try https://tab.v360.dev/");
+	
 	mainNode = document.getElementById("main");
 	
 	bar = document.getElementById("bar");
