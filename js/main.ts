@@ -172,12 +172,8 @@ function makeResultEntryNode(text: string, href: string, color: string, icon: st
 		}
 		
 		if (icon) {
-			var svgNode = document.createElement("svg");
-			var svgUseNode = document.createElement("use");
-			
-			svgNode.classList.add("resultIconSVG");
-			svgNode.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-			svgNode.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+			var svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+			var svgUseNode = document.createElementNS("http://www.w3.org/2000/svg", "use");
 			
 			svgUseNode.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", icon);
 			
