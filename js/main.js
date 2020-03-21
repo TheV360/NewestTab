@@ -1,8 +1,12 @@
-(function () {
+(() => {
     var mainNode;
     var bar, clock;
     var searchForm, searchBar;
     var results;
+    class DatabaseEntry {
+    }
+    class ResultNode {
+    }
     var database = [
         { name: "Bandcamp", url: "https://bandcamp.com/", color: "#1da0c3", icon: "img/brands.svg#bandcamp", },
         { name: "Bill Wurtz", url: "https://billwurtz.com/", color: "#000000", icon: "img/solid.svg#umbrella", },
@@ -16,10 +20,10 @@
         { name: "YouTube", url: "https://youtube.com/feed/subscriptions", color: "#ff0000", icon: "img/brands.svg#youtube", },
     ];
     var searchProviders = [
-        { name: "Search", url: "https://google.com/search?q=%s", color: "#4286f3", icon: "img/solid.svg#search" },
+        { name: "Search", url: "https://google.com/search?q=%s", color: null, icon: "img/solid.svg#search" },
     ];
     // boxBlurImage(imageID,canvasID,radius,iterations)
-    document.addEventListener("DOMContentLoaded", function (e) {
+    document.addEventListener("DOMContentLoaded", _ => {
         // Remove all empty whitespace nodes.
         clean(document.body);
         // Get all the HTMLElements.
@@ -34,28 +38,28 @@
         updateClock();
         updateSearch(searchBar.value);
         // Set up the search bar.
-        searchBar.addEventListener("input", function (_) { return updateSearch(searchBar.value); });
-        searchForm.addEventListener("submit", function (_) { return webSearch(searchProviders[0].url, searchBar.value); });
+        searchBar.addEventListener("input", _ => updateSearch(searchBar.value));
+        searchForm.addEventListener("submit", _ => webSearch(searchProviders[0].url, searchBar.value));
         searchBar.focus();
         // And show that this is a work in progress if you're not running it locally.
-        if ((location.protocol !== "file:") && (location.host !== "localhost")) {
+        if ((location.protocol !== "file:") && (location.host !== "localhost:8000")) {
             alert("Heads up - this is very early in development. Not quite usable yet. For a stable new tab page, try https://tab.v360.dev/");
             searchBar.focus();
         }
     });
     function getBackground() {
         var root = document.documentElement;
-        root.style.setProperty("--background", "url(\"../img/test2.jpg\")");
-        root.style.setProperty("--background-blur", "url(\"../img/test2Blurred.jpg\")");
+        root.style.setProperty("--background", `url("../img/test2.jpg")`);
+        root.style.setProperty("--background-blur", `url("../img/test2Blurred.jpg")`);
     }
-    var clockShortDisplayOptions = {
+    const clockShortDisplayOptions = {
         year: "numeric",
         month: "numeric",
         day: "numeric",
         hour: "2-digit",
         minute: "2-digit"
     };
-    var clockLongDisplayOptions = {
+    const clockLongDisplayOptions = {
         year: "numeric",
         month: "long",
         weekday: "long",
@@ -67,7 +71,7 @@
         var now = new Date();
         // localetimestring is good and supports multiple languages by default.
         clock.textContent = now.toLocaleDateString(undefined, clockShortDisplayOptions);
-        setTimeout(function (_) { updateClock(); }, 200);
+        setTimeout(_ => { updateClock(); }, 200);
     }
     function updateSearch(value) {
         // A bit gross
@@ -108,11 +112,10 @@
             if (tmp >= 0) {
                 // just store some temporary data here
                 result.push([i, tmp]);
-                // result.push([i, 0]);
             }
         }
         // sort by how close to the beginning the term is.
-        result.sort(function (a, b) { return a[1] - b[1]; });
+        result.sort((a, b) => { return a[1] - b[1]; });
         // remove temporary data, so it's just the indexes now.
         for (var i = 0; i < result.length; i++) {
             result[i] = result[i][0];
@@ -125,44 +128,42 @@
     function makeSearchURL(searchProvider, term) {
         return searchProvider.replace("%s", encodeURIComponent(term));
     }
-    function makeResultEntryNode(text, href, color, icon) {
+    function makeResultEntryNode(entry) {
         var linkNode = document.createElement("a");
         var labelNode = document.createElement("div");
         linkNode.classList.add("resultEntry");
         labelNode.classList.add("resultLabel");
-        linkNode.href = href;
-        labelNode.textContent = text;
-        if (color || icon) {
+        linkNode.href = entry.url;
+        labelNode.textContent = entry.name;
+        if (entry.color || entry.icon) {
             var iconNode = document.createElement("div");
             iconNode.classList.add("resultIcon");
-            if (color) {
+            if (entry.color) {
                 iconNode.classList.add("hasBGColor");
-                iconNode.style.backgroundColor = color;
+                iconNode.style.backgroundColor = entry.color;
             }
-            if (icon) {
+            if (entry.icon) {
                 var svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 var svgUseNode = document.createElementNS("http://www.w3.org/2000/svg", "use");
                 svgNode.classList.add("resultIconSVG");
-                svgUseNode.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", icon);
+                svgUseNode.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", entry.icon);
                 svgNode.appendChild(svgUseNode);
                 iconNode.appendChild(svgNode);
             }
             linkNode.appendChild(iconNode);
         }
         linkNode.appendChild(labelNode);
-        return {
-            link: linkNode, label: labelNode,
-        };
+        return { link: linkNode, label: labelNode };
     }
     function makeDatabaseResultNode(index) {
-        var entry = database[index];
-        var self = makeResultEntryNode(entry.name, entry.url, entry.color, entry.icon);
+        var self = makeResultEntryNode(database[index]);
         self.link.classList.add("databaseResult");
         return self;
     }
     function makeSearchRequestNode(index, term) {
-        var entry = searchProviders[index];
-        var self = makeResultEntryNode(entry.name, makeSearchURL(entry.url, term), /*entry.color*/ null, entry.icon);
+        var entry = Object.assign({}, searchProviders[index]);
+        entry.url = makeSearchURL(entry.url, term);
+        var self = makeResultEntryNode(entry);
         self.link.classList.add("searchRequest");
         return self;
     }

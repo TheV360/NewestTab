@@ -14,7 +14,7 @@
 * Same background-selection features as in NewerTab, with blurring done on-the-fly with "Javascript making an image object" and not CSS filters. This is for performance reasons. or maybe not do this?
 
 ## TODO
-* Add FontAwesome and theme color support to bookmarks.
+* ~~Add FontAwesome and theme color support to bookmarks.~~
 * Make config dialog "engine" like in NewerTab.
 * Find a way to add a "search bar only takes up the top 2/3rds or 1/4th of the screen instead of exactly in the center" mode
 * Fix `css-filter` covering random things
