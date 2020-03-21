@@ -127,27 +127,31 @@
     }
     function makeResultEntryNode(text, href, color, icon) {
         var linkNode = document.createElement("a");
-        var svgNode = document.createElement("svg");
-        var iconNode = document.createElement("div");
         var labelNode = document.createElement("div");
         linkNode.classList.add("resultEntry");
-        svgNode.classList.add("resultIconSVG");
-        iconNode.classList.add("resultIcon");
         labelNode.classList.add("resultLabel");
         linkNode.href = href;
         labelNode.textContent = text;
-        if (color) {
-            iconNode.classList.add("hasBGColor");
-            iconNode.style.backgroundColor = color;
+        if (color || icon) {
+            var iconNode = document.createElement("div");
+            var svgNode = document.createElement("svg");
+            svgNode.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+            svgNode.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+            iconNode.classList.add("resultIcon");
+            svgNode.classList.add("resultIconSVG");
+            if (color) {
+                iconNode.classList.add("hasBGColor");
+                iconNode.style.backgroundColor = color;
+            }
+            if (icon) {
+                svgNode.innerHTML = "<use xlink:href=\"" + icon + "\"></use>";
+                iconNode.appendChild(svgNode);
+            }
+            linkNode.appendChild(iconNode);
         }
-        if (icon) {
-            svgNode.innerHTML = "<use xlink:href=\"" + icon + "\"></use>";
-            iconNode.appendChild(svgNode);
-        }
-        linkNode.appendChild(iconNode);
         linkNode.appendChild(labelNode);
         return {
-            link: linkNode, label: labelNode, icon: iconNode,
+            link: linkNode, label: labelNode,
         };
     }
     function makeDatabaseResultNode(index) {
