@@ -1,18 +1,23 @@
 (()=>{
 var mainNode: HTMLElement;
-var bar: HTMLElement;
-var searchBar: HTMLElement, clock: HTMLElement;
+var bar: HTMLElement, clock: HTMLElement;
+var searchForm: HTMLElement, searchBar: HTMLInputElement;
 var results: HTMLElement;
 
 var searchProvider = "https://google.com/search?q=%s";
 
 var database = [
-	{ name: "Amazon",		link: "https://amazon.com/",	},
-	{ name: "Bandcamp",		link: "https://bandcamp.com/",	},
-	{ name: "Bill Wurtz",	link: "https://billwurtz.com/",	},
-	{ name: "Reddit",		link: "https://reddit.com/hot/",},
-	{ name: "Twitter",		link: "https://twitter.com/",	},
-	{ name: "Tumblr",		link: "https://tumblr.com/",	},
+	{ name: "Amazon",		label: "https://amazon.com/",	},
+	{ name: "Bandcamp",		label: "https://bandcamp.com/",	},
+	{ name: "Bill Wurtz",	label: "https://billwurtz.com/",	},
+	{ name: "Reddit",		label: "https://reddit.com/hot/",},
+	{ name: "Twitter",		label: "https://twitter.com/",	},
+	{ name: "Tumblr",		label: "https://tumblr.com/",	},
+	{ name: "Query 1", label: "https://example.com/", },
+	{ name: "Query 2", label: "https://example.com/", },
+	{ name: "Query 3", label: "https://example.com/", },
+	{ name: "Query 4", label: "https://example.com/", },
+	{ name: "Query 5", label: "https://example.com/", },
 ];
 
 // boxBlurImage(imageID,canvasID,radius,iterations)
@@ -21,21 +26,33 @@ document.addEventListener("DOMContentLoaded", e=>{
 	// Remove all empty whitespace nodes.
 	clean(document.body);
 	
-	alert("Heads up - this is very early in development. Not quite usable yet. For a stable new tab page, try https://tab.v360.dev/");
+	// Get all the HTMLElements.
 	
 	mainNode = document.getElementById("main");
 	
 	bar = document.getElementById("bar");
 	clock = document.getElementById("clock");
-	searchBar = document.getElementById("search");
+	
+	searchForm = document.getElementById("searchForm");
+	searchBar = <HTMLInputElement>document.getElementById("search");
 	
 	results = document.getElementById("results");
 	
+	// Update a few things.
 	getBackground();
 	updateClock();
+	updateSearch(searchBar.value);
 	
-	searchBar.addEventListener("input", e=>updateSearch((<HTMLInputElement>e.target).value));
+	// Set up the search bar.
+	searchBar.addEventListener("input", _=>updateSearch(searchBar.value));
+	searchForm.addEventListener("submit", _=>webSearch(searchBar.value));
 	searchBar.focus();
+	
+	// And show that this is a work in progress if you're not running it locally.
+	if ((location.protocol !== "file:") && (location.host !== "localhost")) {
+		alert("Heads up - this is very early in development. Not quite usable yet. For a stable new tab page, try https://tab.v360.dev/");
+		searchBar.focus();
+	}
 });
 
 function getBackground() {
@@ -68,7 +85,7 @@ function updateClock() {
 	// localetimestring is *very* useful, though. it'll also support multiple languages by default!!
 	clock.textContent = now.toLocaleDateString(undefined, clockShortDisplayOptions);
 	
-	setTimeout(()=>{updateClock();}, .2e3);
+	setTimeout(_=>{updateClock();}, 200);
 }
 
 function updateSearch(value: string) {
@@ -87,11 +104,11 @@ function updateSearch(value: string) {
 	if (databaseResults !== null) {
 		if (databaseResults.length) {
 			for (var i = 0; i < databaseResults.length; i++) {
-				results.appendChild(makeDatabaseResultNode(databaseResults[i]));
+				results.appendChild(makeDatabaseResultNode(databaseResults[i]).link);
 			}
 		}
 		if (value.length) {
-			results.appendChild(makeSearchRequestNode(value));
+			results.appendChild(makeSearchRequestNode(value).link);
 		}
 		results.classList.add("on");
 	} else {
@@ -99,8 +116,8 @@ function updateSearch(value: string) {
 	}
 }
 
-function searchDatabase(term: string) {
-	if (!term.length) return null;
+function searchDatabase(term: string): number[] {
+	if (!term || !term.length) return null;
 	
 	var result = [];
 	
@@ -111,6 +128,7 @@ function searchDatabase(term: string) {
 		if (tmp >= 0) {
 			// just store some temporary data here
 			result.push([i, tmp]);
+			// result.push([i, 0]);
 		}
 	}
 	
@@ -125,28 +143,49 @@ function searchDatabase(term: string) {
 	return result;
 }
 
-function makeDatabaseResultNode(index: number) {
-	var node = document.createElement("li");
-	var nodeLink = document.createElement("a");
-	
-	nodeLink.textContent = database[index].name;
-	nodeLink.href = database[index].link;
-	
-	node.appendChild(nodeLink);
-	return node;
+function webSearch(term: string) {
+	location.assign(makeSearchURL(searchProvider, term));
 }
-function makeSearchRequestNode(term: string) {
-	var node = document.createElement("li");
-	var nodeLink = document.createElement("a");
+
+function makeSearchURL(searchProvider: string, term: string): string {
+	return searchProvider.replace("%s", encodeURIComponent(term));
+}
+
+function makeResultEntryNode(text: string, href: string): { link: HTMLElement, label: HTMLElement, icon: HTMLElement } {
+	var linkNode = document.createElement("a");
+	var iconNode = document.createElement("div");
+	var labelNode = document.createElement("div");
 	
-	// Fun way to get around having to filter things.
-	nodeLink.textContent = term;
-	nodeLink.innerHTML = "Search for <strong>" + nodeLink.innerHTML + "</strong>...";
+	linkNode.classList.add("resultEntry");
+	iconNode.classList.add("resultIcon");
+	labelNode.classList.add("resultLabel");
 	
-	nodeLink.href = searchProvider.replace("%s", encodeURIComponent(term));
+	linkNode.href = href;
+	labelNode.textContent = text;
 	
-	node.appendChild(nodeLink);
-	return node;
+	linkNode.appendChild(iconNode);
+	linkNode.appendChild(labelNode);
+	return {
+		link: linkNode, label: labelNode, icon: iconNode,
+	};
+}
+
+function makeDatabaseResultNode(index: number): { link: HTMLElement, label: HTMLElement, icon: HTMLElement } {
+	var self = makeResultEntryNode(database[index].name, database[index].label);
+	
+	self.link.classList.add("databaseResult");
+	
+	return self;
+}
+function makeSearchRequestNode(term: string): { link: HTMLElement, label: HTMLElement, icon: HTMLElement } {
+	var self = makeResultEntryNode(term, makeSearchURL(searchProvider, term));
+	
+	self.link.classList.add("searchRequest");
+	
+	// We've already set the textContent, which filters out any bad HTML, and we can drop that into this HTML easily.
+	self.label.innerHTML = "Search for “<strong>" + self.label.innerHTML + "</strong>”";
+	
+	return self;
 }
 
 // From sitepoint.com/removing-useless-nodes-from-the-dom/
