@@ -134,17 +134,19 @@
         labelNode.textContent = text;
         if (color || icon) {
             var iconNode = document.createElement("div");
-            var svgNode = document.createElement("svg");
-            svgNode.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-            svgNode.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
             iconNode.classList.add("resultIcon");
-            svgNode.classList.add("resultIconSVG");
             if (color) {
                 iconNode.classList.add("hasBGColor");
                 iconNode.style.backgroundColor = color;
             }
             if (icon) {
-                svgNode.innerHTML = "<use xlink:href=\"" + icon + "\"></use>";
+                var svgNode = document.createElement("svg");
+                var svgUseNode = document.createElement("use");
+                svgNode.classList.add("resultIconSVG");
+                svgNode.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+                svgNode.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+                svgUseNode.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", icon);
+                svgNode.appendChild(svgUseNode);
                 iconNode.appendChild(svgNode);
             }
             linkNode.appendChild(iconNode);
