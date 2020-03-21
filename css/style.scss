@@ -1,5 +1,5 @@
----
----
+// ---
+// ---
 
 // TODO: before committing, please!!!! Remove comments from front matter.
 // I've forgotten to do it TWO times.
@@ -9,6 +9,10 @@
 :root {
 	--border-radius: 1rem;
 	--border-radius-small: 0.25rem;
+	
+	// Because of rounded corners, horizontal padding is greater.
+	--padding-small-horiz: 1rem;
+	--padding-small-vert: 0.5rem;
 	
 	--background: linear-gradient(#e66465, #9198e5);
 	--background-blur: linear-gradient(#9198e5, #e66465);
@@ -91,6 +95,7 @@ input {
 	border-radius: var(--border-radius);
 	
 	overflow: hidden;
+	z-index: 1;
 	
 	&:not(.css-filter):not(.css-backdrop-filter) {
 		background-image: var(--background-blur);
@@ -118,11 +123,12 @@ input {
 		background-size: cover;
 		
 		filter: blur(var(--blur-size));
+		
+		z-index: -1;
 	}
 	
 	&.css-backdrop-filter {
-		-webkit-backdrop-filter: blur(2rem);
-		backdrop-filter: blur(2rem);
+		backdrop-filter: blur(var(--blur-size));
 	}
 	
 	#bar {
@@ -143,43 +149,43 @@ input {
 		overflow: hidden;
 		
 		&.on {
+			--primary: var(--bar-active-fg);
+			
 			color: var(--bar-active-fg);
 			background-color: var(--bar-active-bg);
-			
-			#clock {
-				color: var(--bar-active-fg);
-			}
-			
-			#searchForm, #searchForm #search {
-				color: var(--bar-active-fg);
-			}
 		}
 	
 		#clock {
 			@include unselectable;
 			
-			padding: .5rem 1rem;
-			
+			padding: var(--padding-small-vert) var(--padding-small-horiz);
 			border-radius: var(--border-radius) 0 0 var(--border-radius);
 			
 			line-height: 1;
 			
+			color: var(--primary);
 			background-color: transparentize($color: white, $amount: 0.75);
 		}
 		
 		#searchForm {
+			display: flex;
+			
 			height: 2rem;
 			
 			flex-grow: 1;
 			
+			color: var(--primary);
+			background-color: transparent;
+			
 			#search {
-				width: 100%;
 				height: 2rem;
 				
-				padding: .5rem 1rem;
+				flex-grow: 1;
 				
-				color: var(--primary);
-				background-color: transparent;
+				padding: var(--padding-small-vert) var(--padding-small-horiz);
+				
+				color: inherit;
+				background-color: inherit;
 				
 				font-family: "Iosevka Term SS02", "Roboto", sans-serif;
 				font-weight: 300;
@@ -187,6 +193,14 @@ input {
 				&::placeholder {
 					color: transparentize($color: white, $amount: 0.5);
 				}
+			}
+			
+			#searchSubmit {
+				width: 2rem;
+				height: 2rem;
+				
+				color: inherit;
+				background-color: inherit;
 			}
 		}
 	}
@@ -211,36 +225,48 @@ input {
 		}
 		
 		.resultEntry {
-			display: block;
+			display: flex;
+			
+			justify-content: center;
+			align-items: center;
+			align-content: center;
 			
 			padding: 0.5rem;
-				
-			border-radius: var(--border-radius);
+			
+			border-radius: var(--border-radius-small);
 				
 			text-decoration: none;
 			color: var(--primary);
 			
 			.resultIcon {
-				display: inline-block;
+				flex-shrink: 0;
 				
 				margin-right: 0.5rem;
-				
-				border-radius: var(--border-radius-small);
 				
 				width: 1.5rem;
 				height: 1.5rem;
 				
-				vertical-align: top;
+				&.hasBGColor {
+					border-radius: var(--border-radius-small);
+					
+					.resultIconSVG {
+						padding: 0.25rem;
+					}
+				}
 				
-				background-color: #9198e5; // TODO
+				.resultIconSVG {
+					width: 100%;
+					height: 100%;
+					
+					fill: white;
+					stroke: none;
+				}
 			}
 			
 			.resultLabel {
-				display: inline-block;
+				display: inline;
 				
-				height: 1.5rem;
-				
-				vertical-align: middle; // TODO: this is awkward. Don't really like it
+				line-height: 1.5rem;
 			}
 			
 			&:hover {

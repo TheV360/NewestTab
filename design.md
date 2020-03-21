@@ -17,6 +17,9 @@
 * Add FontAwesome and theme color support to bookmarks.
 * Make config dialog "engine" like in NewerTab.
 * Find a way to add a "search bar only takes up the top 2/3rds or 1/4th of the screen instead of exactly in the center" mode
+* Fix `css-filter` covering random things
+	* `::before` covers the results
+	* `::after` covers both search and results
 * Clean up TypeScript by actually learning it.
 * Clean up CSS? I have inconsistent style rule ordering, so maybe fix that.
 	* border-radius goes with padding and margin too!
