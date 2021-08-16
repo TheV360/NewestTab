@@ -49,7 +49,7 @@ html, body {
 	color: white;
 	background-color: black;
 	
-	font-family: "Iosevka Term SS02", "Roboto", sans-serif;
+	font-family: monospace, sans-serif;
 	font-weight: 300;
 }
 
@@ -188,8 +188,7 @@ input {
 				color: inherit;
 				background-color: inherit;
 				
-				font-family: "Iosevka Term SS02", "Roboto", sans-serif;
-				font-weight: 300;
+				font: inherit;
 			}
 			
 			#searchSubmit {
